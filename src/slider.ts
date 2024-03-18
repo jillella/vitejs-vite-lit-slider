@@ -7,6 +7,7 @@ import style from './slider.scss?inline';
 export class LitSlider extends LitElement {
   @property({ type: Number }) min = 0;
   @property({ type: Number }) max = 100;
+  @property({ type: Number }) step = 1;
   @state() private minVal = this.min;
   @state() private maxVal = this.max;
   @query('.slider__range') private range!: HTMLDivElement;
@@ -35,14 +36,16 @@ export class LitSlider extends LitElement {
 
   private handleMinChange(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const value = Math.min(Number(input.value), this.maxVal - 1);
-    this.minVal = value;
+    let value = Number(input.value);
+    value = Math.min(value, this.maxVal - this.step); // Ensure there's at least a step's difference
+    this.minVal = Math.max(value, this.min); // Ensure minVal does not exceed min
   }
 
   private handleMaxChange(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const value = Math.max(Number(input.value), this.minVal + 1);
-    this.maxVal = value;
+    let value = Number(input.value);
+    value = Math.max(value, this.minVal + this.step); // Ensure there's at least a step's difference
+    this.maxVal = Math.min(value, this.max); // Ensure maxVal does not exceed max
   }
 
   render() {
@@ -52,6 +55,7 @@ export class LitSlider extends LitElement {
           type="range"
           min="${this.min}"
           max="${this.max}"
+          step="${this.step}"
           .value="${this.minVal.toString()}"
           @input="${this.handleMinChange}"
           class="thumb thumb--left"
@@ -61,6 +65,7 @@ export class LitSlider extends LitElement {
           type="range"
           min="${this.min}"
           max="${this.max}"
+          step="${this.step}"
           .value="${this.maxVal.toString()}"
           @input="${this.handleMaxChange}"
           class="thumb thumb--right"
