@@ -73,8 +73,8 @@
 
 /* For Chrome browsers */
 .thumb::-webkit-slider-thumb {
-  background-color: #e28b28;
-  border: none;
+  background-color: #fff;
+  border: 1px solid #e28b28;
   border-radius: 50%;
   box-shadow: 0 0 1px 1px #ced4da;
   cursor: pointer;
