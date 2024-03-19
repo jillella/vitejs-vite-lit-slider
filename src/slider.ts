@@ -37,25 +37,26 @@ export class LitSlider extends LitElement {
   private handleMinChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     let value = Number(input.value);
-    value = Math.min(value, this.maxVal - this.step);
     this.minVal = Math.max(value, this.min);
     this.preventOverlap('min');
   }
-
+  
   private handleMaxChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     let value = Number(input.value);
-    value = Math.max(value, this.minVal + this.step);
     this.maxVal = Math.min(value, this.max);
     this.preventOverlap('max');
   }
 
   private preventOverlap(changedThumb: string): void {
-    if (changedThumb === 'min' && this.minVal >= this.maxVal - this.step) {
-      this.maxVal = Math.min(this.maxVal + this.step, this.max);
-    } else if (changedThumb === 'max' && this.maxVal <= this.minVal + this.step) {
-      this.minVal = Math.max(this.minVal - this.step, this.min);
+    if (changedThumb === 'min' && this.minVal > this.maxVal - this.step) {
+      // If moving the min thumb past the max thumb - step, push the max thumb ahead
+      this.maxVal = Math.min(this.minVal + this.step, this.max);
+    } else if (changedThumb === 'max' && this.maxVal < this.minVal + this.step) {
+      // If moving the max thumb before the min thumb + step, pull the min thumb back
+      this.minVal = Math.max(this.maxVal - this.step, this.min);
     }
+  
     this.updateRangeStyle();
   }
 
